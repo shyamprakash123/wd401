@@ -311,7 +311,7 @@ test("creating a new session", async () => {
 
 > If these test suite fails then merging and pushing for the pull-request is denied this ensures the code quality checks and expected working.
 
-## Using Github Actions for Tests and Quality checks:
+## Using Github Actions for Tests and Quality checks and also to deploy:
 
 `.github/workflows/main.yml`
 
