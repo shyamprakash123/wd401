@@ -64,20 +64,20 @@ const [emailVerificationStatus, setEmailVerificationStatus] = useState("pending"
 
 useEffect(() => {
 	const  verifyEmail  =  async () => {
-	const  isSuccess  =  await  VerifyEmailVerification(uid, token);
-	if (isSuccess  ===  true) {
-	setEmailVerificationStatus("success");
-	} else {
-	setEmailVerificationStatus("failed");
-	errorNotification(isSuccess.errors[fieldName][0]);
-	} else  if (fieldName  ===  "detail") {
-	errorNotification(isSuccess.errors[fieldName]);
-	}
+		const  isSuccess  =  await  VerifyEmailVerification(uid, token);
+		if (isSuccess  ===  true) {
+			setEmailVerificationStatus("success");
+		} else {
+			setEmailVerificationStatus("failed");
+			errorNotification(isSuccess.errors[fieldName][0]);
+		} else  if (fieldName  ===  "detail") {
+			errorNotification(isSuccess.errors[fieldName]);
+		}
 	};
 	verifyEmail();
 	}, []);
 
-	return (
+return (
 	{ emailVerificationStatus === "success" &&
 	<Success/>
 	}
@@ -103,29 +103,29 @@ const [emailVerificationStatus, setEmailVerificationStatus] = useState<IEmailVer
 
 useEffect(() => {
 	const  verifyEmail  =  async () => {
-	const  isSuccess  =  await  VerifyEmailVerification(uid, token);
-	if (isSuccess  ===  true) {
-	setEmailVerificationStatus("success");
-	} else {
-	setEmailVerificationStatus("failed");
-	errorNotification(isSuccess.errors[fieldName][0]);
-	} else  if (fieldName  ===  "detail") {
-	errorNotification(isSuccess.errors[fieldName]);
-	}
+		const  isSuccess  =  await  VerifyEmailVerification(uid, token);
+		if (isSuccess  ===  true) {
+			setEmailVerificationStatus("success");
+		} else {
+			setEmailVerificationStatus("failed");
+			errorNotification(isSuccess.errors[fieldName][0]);
+		} else  if (fieldName  ===  "detail") {
+			errorNotification(isSuccess.errors[fieldName]);
+		}
 	};
 	verifyEmail();
 	}, []);
 
 	return (
-	{ emailVerificationStatus === IEmailVerificationStatus.success &&
-	<Success/>
-	}
-	{ emailVerificationStatus === IEmailVerificationStatus.failed &&
-	<Failed/>
-	}
-	{ emailVerificationStatus === IEmailVerificationStatus.pending &&
-	<Loading/>
-	}
+		{ emailVerificationStatus === IEmailVerificationStatus.success &&
+		<Success/>
+		}
+		{ emailVerificationStatus === IEmailVerificationStatus.failed &&
+		<Failed/>
+		}
+		{ emailVerificationStatus === IEmailVerificationStatus.pending &&
+		<Loading/>
+		}
 	)};
 
 
@@ -152,14 +152,17 @@ First, make sure you have Babel installed along with necessary presets and plugi
 
 Create a Babel configuration file named `.babelrc` in the root of your project. This file defines Babel presets and plugins to use:
 
-```
+```json
 {
   "presets": [
-    ["@babel/preset-env", {
-      "targets": {
-        "browsers": ["> 1%", "last 2 versions"]
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "browsers": ["> 1%", "last 2 versions"]
+        }
       }
-    }]
+    ]
   ],
   "plugins": []
 }
