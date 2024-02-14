@@ -17,6 +17,17 @@ npm install --save-dev jest
 
 Jest can be configured via a `jest.config.js` file or through the `"jest"` field in your `package.json`. Let's create a `jest.config.js` file at the root of your project:
 
+```json
+"scripts": {
+    "start": "nodemon -e js,ejs",
+    "start:prod": "node index.js",
+    "pretest": "NODE_ENV=test npx sequelize-cli db:drop && NODE_ENV=test npx sequelize-cli db:create",
+    "test": "NODE_ENV=test jest --detectOpenHandles",
+    "prepare": "cd ..&& husky install todo-app/.husky",
+    "cy:test": "npx cypress run"
+  },
+```
+
 ### 3. Writing Tests
 
 Create test files within your project, following a naming convention that Jest recognizes. Jest will look for test files with names ending in `.test.js` or `.spec.js` by default. For example, we might have a file named `todos.js`:
@@ -242,6 +253,34 @@ describe("Todo Application", () => {
   });
 });
 ```
+
+#### Configure using cypress.config.js
+
+- Generate a cypress.config.js file in root directory.
+
+```js
+/_ eslint-disable no-unused-vars _/;
+const { defineConfig } = require("cypress");
+
+module.exports = defineConfig({
+  e2e: {
+    setupNodeEvents(on, config) {
+      // implement node event listeners here
+    },
+  },
+});
+```
+
+- Also configure cypress in package.json to run with `npm run`
+
+```js
+"scripts": {
+   "clean:start": "npm run pretest && NODE_ENV=test npm start",
+   "cy:test": "npx cypress run"
+   },
+```
+
+=> Such that we can run our test using `npm run cy:test`
 
 ### 4. Running Integration Tests
 
