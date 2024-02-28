@@ -488,6 +488,6 @@ deploy:
 
 ### Screen Recorded Link For CI/CD Integration:
 
-[Watch the Screen Recording](https://www.loom.com/share/fe0dad6926b149f9b76d0854fb0f2bb1?sid=d6ebf39d-16ba-44ce-945f-ba77e8b30b3a)
+[Watch the Screen Recording](https://www.loom.com/share/682c0273f3d841bbb3369b642d0493f0?sid=cd4d22f2-0208-477c-b684-5b9bf163453d)
 
-[Continuation video...](https://www.loom.com/share/28b7fc6d6c0c4c66bbdcaa541707d253?sid=d97260c8-f0b8-40cc-92bf-238a66ff997d)
+[Continuation video...](https://www.loom.com/share/e3dfc5dfc1504bd5a8391451b4f2e065?sid=787ea976-d91a-491b-a194-db14c25f1cbf)

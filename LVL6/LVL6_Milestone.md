@@ -444,4 +444,6 @@ DB_PASSWORD=mypassword
 
 ### Watch Demonstration Video:
 
-[Video Link](https://www.loom.com/share/a4d1ecb239654fcbaf0f70a3e7e0bb02?sid=3b075ea6-ad30-4158-b264-5cc3200d289c)
+[Video Link](https://www.loom.com/share/6aff21257e7a4c2cbba3ffccc03db4ac?sid=5868115d-fac4-4a67-bb06-a376c285ad67)
+
+[Continuation video...](https://www.loom.com/share/a94ee2c47ae04c63bbb3ab5d0593b603?sid=46863a71-fc50-4dfc-8d77-07a9ee71335e)
