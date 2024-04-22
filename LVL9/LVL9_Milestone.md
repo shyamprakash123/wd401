@@ -1,375 +1,203 @@
-# Internationalization (i18n) and Localization (l10n) in React.js
+# WD401 Level-9 Submission Documentation
 
-## Objective
+## Error Tracking System:
 
-The objective of this task is to implement internationalization and localization features in a React.js application to make it accessible and user-friendly for a global audience. This involves enabling dynamic translation of content, localizing date and time formats, and providing the ability to switch between different locales.
+### Tools and Libraries
 
-## Dynamic Content Translation
+For error tracking, we recommend integrating one of the following third-party tools or libraries:
 
-To achieve dynamic content translation, follow these steps:
+- **Sentry**: Sentry is a popular error tracking and monitoring tool that provides real-time insights into application errors. It supports various platforms and programming languages, including JavaScript/React.
 
-1. **Create Language Files or Dictionaries**: Develop language files or dictionaries that store translations for different languages. Each file should contain key-value pairs where keys represent the original text in the default language and values represent the translated text in the target language.
+- **Rollbar**: Rollbar is another widely used error tracking solution that offers real-time error monitoring, alerting, and debugging features. It also supports JavaScript/React applications.
 
-![alt text](<Screenshot 2024-03-20 211303.png>)
+### Sentry is a powerful tool for error logging and monitoring. It includes features like:
 
-![alt text](<Screenshot 2024-03-20 211324.png>)
+- **Real-time error tracking**: Sentry provides real-time visibility into errors as they occur, enabling quick response and resolution.
 
-`en.json (english translation file)`
+- **Contextual information**: Sentry captures additional contextual information about errors, such as user data, environment details, and more.
 
-```json
-{
-  "translation": {
-    "assignee": "Assignee",
-    "cancel": "Cancel",
-    "comment": "Comment",
-    "create_new_project": "Create New Project",
-    "create_new_task": "Create New Task",
-    "description": "Description",
-    "Done": "Done",
-    "due_date": "Due Date",
-    "enter_project_name": "Enter Project Name",
-    "In progress": "In Progress",
-    "members": "Members",
-    "newproject": "New Project",
-    "newtask": "New Task",
-    "Pending": "Pending",
-    "profile": "Profile",
-    "projects": "Projects",
-    "signout": "Sign out",
-    "submit": "Submit",
-    "title": "Title",
-    "update": "Update",
-    "enter_title": "Enter Title",
-    "enter_description": "Enter Description",
-    "task_details": "Task Details"
+- **Integrations**: It integrates with various platforms, frameworks, and languages, making it versatile for different tech stacks.
+
+### Install
+
+Sentry captures data by using an SDK within your application’s runtime.
+
+```bash
+npm install --save @sentry/react
+```
+
+![alt text](<Screenshot 2024-04-22 103916.png>)
+
+### Configure
+
+Configuration should happen as early as possible in your application's lifecycle.
+
+Sentry supports multiple versions of React Router.
+
+`index.tsx`
+
+```tsx
+import ReactDOM from "react-dom/client";
+import App from "./App.js";
+import "./index.css";
+import { ThemeProvider } from "./context/theme.js";
+
+import * as Sentry from "@sentry/react";
+
+Sentry.init({
+  dsn: "https://cbbb92312eada27c9f41c5892921e892@o4506932182712320.ingest.us.sentry.io/4506938086457344",
+  integrations: [
+    Sentry.browserTracingIntegration(),
+    Sentry.replayIntegration({
+      maskAllText: false,
+      blockAllMedia: false,
+    }),
+  ],
+  // Performance Monitoring
+  tracesSampleRate: 1.0, //  Capture 100% of the transactions
+  // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
+  tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
+  // Session Replay
+  replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
+  replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+});
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <ThemeProvider>
+    <App />
+  </ThemeProvider>
+);
+```
+
+Once this is done, all unhandled exceptions are automatically captured by Sentry.
+
+### Add Error Boundary
+
+If you're using React 16 or above, you can use the Error Boundary component to automatically send Javascript errors from inside a component tree to Sentry, and set a fallback UI
+
+### Testing
+
+After integrating the error tracking system, thoroughly test the application to ensure that errors are being captured and logged correctly. Generate test errors by deliberately triggering exceptions or encountering edge cases within the application. Verify that alerts/notifications are triggered as expected for critical errors.
+
+![alt text](<Screenshot 2024-04-22 104527.png>)
+
+![alt text](<Screenshot 2024-04-22 104543.png>)
+
+### Add Readable Stack Traces to Errors
+
+#### Automatic Setup
+
+The easiest way to configure uploading source maps with tsc and sentry-cli is by using the Sentry Wizard:
+
+`npx @sentry/wizard@latest -i sourcemaps`
+
+The wizard will guide you through the following steps:
+
+- Logging into Sentry and selecting a project
+
+- Installing the necessary Sentry packages
+
+- Configuring your build tool to generate and upload source maps
+
+- Configuring your CI to upload source maps
+
+```tsx
+import { defineConfig } from "vite";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
+
+export default defineConfig({
+  build: {
+    sourcemap: true, // Source map generation must be turned on
+  },
+  plugins: [
+    // Put the Sentry vite plugin after all other plugins
+    sentryVitePlugin({
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      org: "rishith",
+      project: "wd301",
+    }),
+  ],
+});
+```
+
+![alt text](<Screenshot 2024-04-22 105106.png>)
+
+## Debugger Capability:
+
+### Introduction
+
+Debugging is a crucial skill for developers. Various approaches and tools are available to help identify and resolve issues in the code we wrote.
+
+- **Console Logging**: We can use `console.log()` statements to output specific values, messages, or variables to the browser console. While this may be simple and easy to implement, it provides limited visibility into the state of the application at a specific moment. Also, it may clutter the codebase if not removed after debugging.
+
+Eg:
+
+```tsx
+export default function ProjectListItems() {
+  let state: any = useProjectsState();
+  const { projects, isLoading, isError, errorMessage } = state;
+
+  console.log(projects); //Console Log Statement for debugging
+
+  if (projects.length === 0 && isLoading) {
+    return <span>Loading...</span>;
   }
-}
-```
 
-`de.json (germen translation file)`
-
-```json
-{
-  "translation": {
-    "assignee": "Abtretungsempfängerin",
-    "cancel": "stornieren",
-    "comment": "Kommentar",
-    "create_new_project": "Neues Projekt erstellen",
-    "create_new_task": "Neue Aufgabe erstellen",
-    "description": "Beschreibung",
-    "Done": "Erledigt",
-    "due_date": "Fälligkeitsdatum",
-    "enter_project_name": "Geben Sie den Projektnamen ein",
-    "In progress": "Im Gange",
-    "members": "Mitglieder",
-    "newproject": "Neues Projekt",
-    "newtask": "Neue Aufgabe",
-    "Pending": "Ausstehend",
-    "profile": "Profil",
-    "projects": "Projekte",
-    "signout": "Abmelden",
-    "submit": "Einreichen",
-    "title": "Titel",
-    "update": "Aktualisieren",
-    "enter_title": "Geben Sie den Titel ein",
-    "enter_description": "Beschreibung eingeben",
-    "task_details": "Aufgabendetails"
+  if (isError) {
+    return <span>{errorMessage}</span>;
   }
+
+  return <>{/*Return statements*/}</>;
 }
 ```
 
-2. **Integration with React.js Application**: Integrate the language files or dictionaries into the React.js application. You can use libraries like `react-i18next` or `react-intl` for this purpose. These libraries provide hooks or components to access translated content within components.
+As for the Root Cause Analysis (RCA) for the bug found using `console.log` statements such that the bug is displayed in the console:
 
-`i18n.ts file`
+![alt text](<Screenshot 2024-04-22 110943.png>)
 
-```ts
-import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
-import deJson from "./locale/de.json";
-import enJson from "./locale/en.json";
-i18n
-  .use(initReactI18next)
-  .use(LanguageDetector)
-  .init({
-    resources: {
-      de: { ...deJson },
-      en: { ...enJson },
-    },
-    debug: true,
-    fallbackLng: "en",
-  });
-```
+The `console.log` statements are used for debugging as what data is passed where it is showing an error and when the data is showing as None or Undefined.
 
-3. **Switching Between Languages**: Implement a mechanism to dynamically switch between languages based on user preferences or system settings. This can be achieved by providing a language selector component that allows users to choose their preferred language. Upon selection, the application should update its state and render content in the chosen language.
+- **Breakpoints**: We can set breakpoints in the code using the browser's developer tools. The execution pauses at these breakpoints, allowing inspection of variables and the call stack. This provides a more interactive and dynamic debugging experience. It also allows step-by-step execution to understand the flow of the program.
 
-`changeLanguage.tsx`
+- **Debugger Statements**: We can insert debugger; statements directly into the code. When the code is executed, it pauses at the debugger; line, allowing for inspection. This is quick and easy to implement. It offers a breakpoint-like experience without relying on the developer tools. But it needs to be removed after debugging, else it can be intrusive if left in the production code.
 
-```ts
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Dialog } from "@headlessui/react";
+Here for breakpoints or debugger we have placed a `debugger` statement in our application code for Projects list every time we proceed to this page at the debugger point the application stops and then runs one by one so has to see where the code is getting error.
 
-interface LanguageSelectorDialogProps {
-  open: boolean;
-  onClose: () => void;
+`ProjectListItems.tsx`
+
+```tsx
+export default function ProjectListItems() {
+  let state: any = useProjectsState();
+  const { projects, isLoading, isError, errorMessage } = state;
+  console.log(projects);
+  debugger; //Debugger Statement for debugging
+  if (projects.length === 0 && isLoading) {
+    return <span>Loading...</span>;
+  }
+
+  if (isError) {
+    return <span>{errorMessage}</span>;
+  }
+  return <>{/*Return statements*/}</>;
 }
-
-const LanguageSelectorDialog: React.FC<LanguageSelectorDialogProps> = ({
-  open,
-  onClose,
-}) => {
-  const { i18n } = useTranslation();
-
-  const currentLanguage = i18n.language;
-
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
-    onClose(); // Close the dialog after language selection
-  };
-
-  return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      className="fixed z-10 inset-0 overflow-y-auto"
-    >
-      <div className="flex items-center justify-center min-h-screen p-4">
-        <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-
-        <div className="relative bg-white rounded-lg px-6 py-4">
-          <Dialog.Title className="text-lg font-medium mb-4">
-            Select Language
-          </Dialog.Title>
-          <div className="space-y-2">
-            <button
-              onClick={() => changeLanguage("en")}
-              className={`block w-full text-left py-2 px-4 rounded-md hover:bg-gray-100 focus:outline-none ${
-                currentLanguage === "en" ? "bg-gray-100" : ""
-              }`}
-            >
-              English
-            </button>
-            <button
-              onClick={() => changeLanguage("de")}
-              className={`block w-full text-left py-2 px-4 rounded-md hover:bg-gray-100 focus:outline-none ${
-                currentLanguage === "de" ? "bg-gray-100" : ""
-              }`}
-            >
-              Germany
-            </button>
-            {/* Add more buttons for other languages as needed */}
-          </div>
-        </div>
-      </div>
-    </Dialog>
-  );
-};
-
-export default LanguageSelectorDialog;
 ```
 
-`In Appbar.tsx`
+- **Browser Developer Tools**: These are a comprehensive suite of tools provided by browsers for inspecting and debugging web applications. It includes the Elements panel, Console, Sources, Network, etc. It allows real-time inspection of the DOM, CSS, and JavaScript. But it has an initial learning curve.
 
-```jsx
-<LanguageSelectorDialog open={dialogOpen} onClose={handleCloseDialog} />
-```
+![alt text](<Screenshot 2024-04-22 105738.png>)
 
-4. **Translation of Components and Text Elements**: Apply translation to various components, text elements, and messages throughout the application. Use the provided hooks or components from the chosen i18n library to fetch translated content and replace the default text with the translated text.
+![alt text](<Screenshot 2024-04-22 105810.png>)
 
-```jsx
-<button
-  type="button"
-  id="newProjectBtn"
-  onClick={openModal}
-  className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
->
-  {t("newproject")}
-</button>
-```
+![alt text](<Screenshot 2024-04-22 105946.png>)
 
-![alt text](<Screenshot 2024-03-20 211536.png>)
+As for the Root Cause Analysis (RCA) for the bug found using React Developer Tools:
 
-![alt text](<Screenshot 2024-03-20 211548.png>)
+> **Bug Description**: The bug is caused due to the fetching of the projects list created.
 
-## Date and Time Localization
+> **Symptoms**: Every time the project is clicked it is showing as something went wrong.
 
-To localize date and time formats, follow these steps:
+> **Root Cause**: May be it is due to the backend delay or fetching of the projects before its creation.
 
-1. **Identify Cultural Preferences**: Understand the variations in date formats (e.g., MM/DD/YYYY or DD/MM/YYYY) and time formats (12-hour vs. 24-hour clock) prevalent in different cultures and regions.
+> **Resolution**: Fetching the projects only after its creation can be the solution.
 
-2. **Utilize Localization Libraries**: Utilize libraries or functions that handle date and time localization. In React.js applications, popular libraries like `date-fns`, `moment.js`, or built-in JavaScript `Intl.DateTimeFormat` can be used for this purpose. These libraries provide methods to format dates and times according to the user's locale.
-
-3. **Integration with React Components**: Integrate the chosen localization library into React components where date and time formatting is required. Use the provided functions or components to format timestamps based on the user's locale.
-
-## Example Implementation
-
-Below is an example of how date and time localization can be implemented in a React.js application:
-
-```jsx
-// Task.ts
-import React from "react";
-import { format } from "date-fns";
-import { useTranslation } from "react-i18next";
-
-function App() {
-  const { t, i18n } = useTranslation();
-
-  const formatDateForPicker = (
-    isoDate: string,
-    t: (key: string) => string,
-    i18n: any
-  ) => {
-    const dateObj = new Date(isoDate);
-    let localeObject;
-    switch (i18n.language) {
-      case "de":
-        localeObject = "de";
-        break;
-      default:
-        localeObject = "en-US";
-    }
-
-    const dateFormatter = new Intl.DateTimeFormat(localeObject, {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-
-    const formattedDate = dateFormatter.format(dateObj);
-    return formattedDate;
-  };
-
-  return (
-    <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
-      <div>
-        <h2 className="text-base font-bold my-1">{task.title}</h2>
-        <p className="text-sm text-slate-500">
-          {formatDateForPicker(task.dueDate, t, i18n)}
-        </p>
-        <p className="text-sm text-slate-500">
-          {t("description")}: {task.description}
-        </p>
-        <p className="text-sm text-slate-500">
-          {t("assignee")}: {task.assignedUserName ?? "-"}
-        </p>
-      </div>
-      <button
-        className="deleteTaskButton cursor-pointer h-4 w-4 rounded-full my-5 mr-5"
-        onClick={(event) => {
-          event.preventDefault();
-          deleteTask(taskDispatch, projectID ?? "", task);
-        }}
-      >
-        Delete
-      </button>
-    </div>
-  );
-}
-
-export default App;
-```
-
-![alt text](<Screenshot 2024-03-20 211742.png>)
-
-![alt text](<Screenshot 2024-03-20 211751.png>)
-
-# Locale Switching in React.js Application
-
-## Objective
-
-The objective of this task is to implement a user interface (UI) component or a settings panel that allows users to select their preferred language/locale. Additionally, enable the application to respond dynamically to locale changes, updating content and formatting according to the selected locale. It's essential to ensure that the locale switch is persistent across sessions, providing a smooth and personalized experience for users who want to interact with the application in their preferred language.
-
-## Implementation Steps
-
-### 1. Create Language Selector Component
-
-Create a language selector component that allows users to choose their preferred language. This component could be a dropdown menu, radio buttons, or any other UI element that suits your application's design.
-
-### 2. Utilize i18n Library Hooks
-
-Utilize hooks provided by the i18n library (e.g., `useTranslation` from `react-i18next`) to access translation functions and the current locale within your components.
-
-### 3. Handle Locale Change Events
-
-Implement event handlers to handle locale change events triggered by the user selecting a different language in the language selector component. Upon a locale change event, update the application's state with the new locale and trigger a re-render to reflect the changes.
-
-## Example Implementation
-
-Below is an example implementation of locale switching in a React.js application using `react-i18next`:
-
-`changeLanguage.tsx`
-
-```jsx
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Dialog } from "@headlessui/react";
-
-interface LanguageSelectorDialogProps {
-  open: boolean;
-  onClose: () => void;
-}
-
-const LanguageSelectorDialog: React.FC<LanguageSelectorDialogProps> = ({
-  open,
-  onClose,
-}) => {
-  const { i18n } = useTranslation();
-
-  const currentLanguage = i18n.language;
-
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
-    onClose(); // Close the dialog after language selection
-  };
-
-  return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      className="fixed z-10 inset-0 overflow-y-auto"
-    >
-      <div className="flex items-center justify-center min-h-screen p-4">
-        <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-
-        <div className="relative bg-white rounded-lg px-6 py-4">
-          <Dialog.Title className="text-lg font-medium mb-4">
-            Select Language
-          </Dialog.Title>
-          <div className="space-y-2">
-            <button
-              onClick={() => changeLanguage("en")}
-              className={`block w-full text-left py-2 px-4 rounded-md hover:bg-gray-100 focus:outline-none ${
-                currentLanguage === "en" ? "bg-gray-100" : ""
-              }`}
-            >
-              English
-            </button>
-            <button
-              onClick={() => changeLanguage("de")}
-              className={`block w-full text-left py-2 px-4 rounded-md hover:bg-gray-100 focus:outline-none ${
-                currentLanguage === "de" ? "bg-gray-100" : ""
-              }`}
-            >
-              Germany
-            </button>
-            {/* Add more buttons for other languages as needed */}
-          </div>
-        </div>
-      </div>
-    </Dialog>
-  );
-};
-
-export default LanguageSelectorDialog;
-```
-
-`Appbar.tsx`
-
-```jsx
-<LanguageSelectorDialog open={dialogOpen} onClose={handleCloseDialog} />
-```
-
-![alt text](<Screenshot 2024-03-20 211848.png>)
-
-![alt text](<Screenshot 2024-03-20 211900.png>)
+> **Impact Analysis**: It may not have much impact now but in future has we add features it may be a problem.
